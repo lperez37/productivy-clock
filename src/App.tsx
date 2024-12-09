@@ -1,7 +1,4 @@
-
 import { useState, useEffect } from 'react';
-import { Volume2, VolumeX } from 'lucide-react';
-import useSound from 'use-sound';
 import confetti from 'canvas-confetti';
 import { CircularTimer } from './components/CircularTimer';
 import { TaskList } from './components/TaskList';
@@ -10,10 +7,11 @@ import { Task, TimerState } from './types';
 import './index.css';
 
 function App() {
-  const [isDark, setIsDark] = useState(() => 
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-  );
-  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [isDark, setIsDark] = useState(() => {
+    const darkMode = localStorage.getItem('darkMode');
+    return darkMode ? JSON.parse(darkMode) : window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+  
   const [tasks, setTasks] = useState<Task[]>(() => {
     const saved = localStorage.getItem('tasks');
     return saved ? JSON.parse(saved) : [];
@@ -26,14 +24,13 @@ function App() {
     extraTimeCount: 0,
   });
 
-  const [playAlarm] = useSound('/alarm.mp3', { volume: 0.5 });
-
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }, [tasks]);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
+    localStorage.setItem('darkMode', JSON.stringify(isDark));
   }, [isDark]);
 
   useEffect(() => {
@@ -46,11 +43,10 @@ function App() {
         }));
       }, 1000);
     } else if (timer.currentTime <= 0 && timer.isRunning) {
-      if (soundEnabled) playAlarm();
       setTimer(prev => ({ ...prev, isRunning: false }));
     }
     return () => clearInterval(interval);
-  }, [timer.isRunning, timer.currentTime, soundEnabled, playAlarm]);
+  }, [timer.isRunning, timer.currentTime]);
 
   const handleStartTimer = () => {
     setTimer(prev => ({ ...prev, isRunning: true }));
@@ -109,18 +105,11 @@ function App() {
   const progress = timer.currentTime / timer.initialTime;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors">
       <div className="container mx-auto px-4 py-8">
         <ThemeToggle isDark={isDark} onToggle={() => setIsDark(prev => !prev)} />
         
-        <button
-          onClick={() => setSoundEnabled(prev => !prev)}
-          className="fixed top-4 left-4 p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-        >
-          {soundEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
-        </button>
-
-        <div className="flex flex-col items-center gap-8">
+        <div className="flex flex-col items-center gap-12">
           <CircularTimer
             initialMinutes={timer.initialTime}
             isRunning={timer.isRunning}
@@ -136,7 +125,7 @@ function App() {
           {!timer.isRunning && timer.currentTime <= 0 && (
             <button
               onClick={handleAddFiveMinutes}
-              className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition-colors"
+              className="px-6 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition-colors shadow-lg hover:shadow-xl"
             >
               Add 5 Minutes
             </button>
@@ -155,4 +144,3 @@ function App() {
 }
 
 export default App;
-      
