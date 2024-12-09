@@ -9,7 +9,7 @@ import './index.css';
 function App() {
   const [isDark, setIsDark] = useState(() => {
     const darkMode = localStorage.getItem('darkMode');
-    return darkMode ? JSON.parse(darkMode) : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return darkMode ? JSON.parse(darkMode) : false;
   });
   
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -29,7 +29,11 @@ function App() {
   }, [tasks]);
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDark);
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
     localStorage.setItem('darkMode', JSON.stringify(isDark));
   }, [isDark]);
 
@@ -68,12 +72,14 @@ function App() {
   const handleAddFiveMinutes = () => {
     if (timer.extraTimeCount >= 3) {
       alert("Maybe it's time to take a break?");
+      return;
     }
-    setTimer(prev => ({
-      ...prev,
-      currentTime: prev.currentTime + 5,
-      extraTimeCount: prev.extraTimeCount + 1,
-    }));
+    setTimer({
+      initialTime: 5,
+      currentTime: 5,
+      isRunning: true,
+      extraTimeCount: timer.extraTimeCount + 1,
+    });
   };
 
   const handleAddTask = (text: string) => {
@@ -106,7 +112,7 @@ function App() {
   const isTimeUp = !timer.isRunning && timer.currentTime <= 0;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
       <div className="container mx-auto px-4 py-8">
         <ThemeToggle isDark={isDark} onToggle={() => setIsDark(prev => !prev)} />
         
