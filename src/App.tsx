@@ -103,6 +103,7 @@ function App() {
   };
 
   const progress = timer.currentTime / timer.initialTime;
+  const isTimeUp = !timer.isRunning && timer.currentTime <= 0;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors">
@@ -120,16 +121,9 @@ function App() {
             setInitialMinutes={(minutes) => 
               setTimer(prev => ({ ...prev, initialTime: minutes, currentTime: minutes }))
             }
+            isTimeUp={isTimeUp}
+            onAddFiveMinutes={handleAddFiveMinutes}
           />
-
-          {!timer.isRunning && timer.currentTime <= 0 && (
-            <button
-              onClick={handleAddFiveMinutes}
-              className="px-6 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition-colors shadow-lg hover:shadow-xl"
-            >
-              Add 5 Minutes
-            </button>
-          )}
 
           <TaskList
             tasks={tasks}
