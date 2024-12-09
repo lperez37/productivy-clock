@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 
 interface CircularTimerProps {
@@ -26,6 +26,19 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
 }) => {
   const [inputMode, setInputMode] = useState(true);
   const [inputValue, setInputValue] = useState(initialMinutes.toString());
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (inputMode && !isRunning && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [inputMode, isRunning]);
+
+  useEffect(() => {
+    if (!isRunning && !isTimeUp) {
+      setInputMode(true);
+    }
+  }, [isRunning, isTimeUp]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
@@ -35,9 +48,23 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
     }
   };
 
+  const handleReset = () => {
+    onReset();
+    setInputMode(true);
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
+  };
+
   const radius = 120;
   const circumference = 2 * Math.PI * radius;
   const dashOffset = circumference * (1 - progress);
+
+  const formatTime = (minutes: number) => {
+    const mins = Math.floor(minutes);
+    const secs = Math.floor((minutes * 60) % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   return (
     <div className="relative w-[300px] h-[300px]">
@@ -72,9 +99,10 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
           >
             Add 5 Minutes
           </button>
-        ) : inputMode && !isRunning ? (
+        ) : inputMode && !isRunning && !isTimeUp ? (
           <div className="flex flex-col items-center">
             <input
+              ref={inputRef}
               type="number"
               value={inputValue}
               onChange={handleInputChange}
@@ -85,9 +113,8 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
             <span className="text-sm text-gray-500 dark:text-gray-400 mt-1">minutes</span>
           </div>
         ) : (
-          <div className="text-4xl font-bold">
-            {Math.floor(initialMinutes * progress)}:
-            {String(Math.floor((initialMinutes * progress * 60) % 60)).padStart(2, '0')}
+          <div className={`text-4xl font-bold ${!isRunning && !isTimeUp ? 'animate-pulse' : ''}`}>
+            {formatTime(initialMinutes * progress)}
           </div>
         )}
       </div>
@@ -100,7 +127,7 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
           {isRunning ? <Pause size={24} /> : <Play size={24} />}
         </button>
         <button
-          onClick={onReset}
+          onClick={handleReset}
           className="p-3 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
         >
           <RotateCcw size={24} />

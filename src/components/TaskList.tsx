@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { ChevronDown, ChevronUp, RotateCcw, Check, Plus } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { ChevronDown, ChevronUp, RotateCcw, Check, Plus, Trash2, Pencil } from 'lucide-react';
 import { Dialog } from '@headlessui/react';
 import { Task } from '../types';
 
@@ -19,6 +19,8 @@ export const TaskList: React.FC<TaskListProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [newTask, setNewTask] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<{ id: string; text: string } | null>(null);
+  const [removingTaskId, setRemovingTaskId] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,8 +31,37 @@ export const TaskList: React.FC<TaskListProps> = ({
   };
 
   const handleClearTasks = () => {
-    setIsModalOpen(false);
-    onClearTasks();
+    const taskElements = document.querySelectorAll('.task-item');
+    taskElements.forEach((el) => {
+      (el as HTMLElement).style.animation = 'fadeOut 0.5s forwards';
+    });
+    setTimeout(() => {
+      setIsModalOpen(false);
+      onClearTasks();
+    }, 500);
+  };
+
+  const handleDeleteTask = (id: string) => {
+    setRemovingTaskId(id);
+    setTimeout(() => {
+      const updatedTasks = tasks.filter(task => task.id !== id);
+      onClearTasks();
+      updatedTasks.forEach(task => onAddTask(task.text));
+      setRemovingTaskId(null);
+    }, 500);
+  };
+
+  const handleEditTask = (id: string, text: string) => {
+    if (editingTask?.id === id) {
+      const updatedTasks = tasks.map(task =>
+        task.id === id ? { ...task, text: editingTask.text } : task
+      );
+      onClearTasks();
+      updatedTasks.forEach(task => onAddTask(task.text));
+      setEditingTask(null);
+    } else {
+      setEditingTask({ id, text });
+    }
   };
 
   return (
@@ -59,7 +90,12 @@ export const TaskList: React.FC<TaskListProps> = ({
                   />
                   <button
                     type="submit"
-                    className="p-2 rounded-lg bg-green-500 hover:bg-green-600 text-white transition-colors"
+                    disabled={!newTask.trim()}
+                    className={`p-2 rounded-lg ${
+                      newTask.trim()
+                        ? 'bg-green-500 hover:bg-green-600'
+                        : 'bg-gray-300 cursor-not-allowed'
+                    } text-white transition-colors`}
                   >
                     <Plus size={20} />
                   </button>
@@ -79,7 +115,9 @@ export const TaskList: React.FC<TaskListProps> = ({
                 {tasks.map((task) => (
                   <li
                     key={task.id}
-                    className="flex items-center gap-2 p-3 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                    className={`task-item flex items-center gap-2 p-3 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors ${
+                      removingTaskId === task.id ? 'animate-fadeOut' : ''
+                    }`}
                   >
                     <button
                       onClick={() => onToggleTask(task.id)}
@@ -91,13 +129,37 @@ export const TaskList: React.FC<TaskListProps> = ({
                     >
                       <Check size={16} />
                     </button>
-                    <span
-                      className={`flex-1 ${
-                        task.completed ? 'line-through text-gray-500' : ''
-                      }`}
-                    >
-                      {task.text}
-                    </span>
+                    {editingTask?.id === task.id ? (
+                      <input
+                        type="text"
+                        value={editingTask.text}
+                        onChange={(e) => setEditingTask({ ...editingTask, text: e.target.value })}
+                        className="flex-1 px-2 py-1 bg-transparent border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:border-blue-500"
+                        autoFocus
+                      />
+                    ) : (
+                      <span
+                        className={`flex-1 ${
+                          task.completed ? 'line-through text-gray-500' : ''
+                        }`}
+                      >
+                        {task.text}
+                      </span>
+                    )}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleEditTask(task.id, task.text)}
+                        className="p-1 text-gray-400 hover:text-blue-500 transition-colors"
+                      >
+                        <Pencil size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteTask(task.id)}
+                        className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </li>
                 ))}
               </ul>
