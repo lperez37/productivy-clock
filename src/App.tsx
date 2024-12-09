@@ -122,7 +122,7 @@ function App() {
               setTimer(prev => ({ ...prev, initialTime: minutes, currentTime: minutes }))
             }
             isTimeUp={isTimeUp}
-            onAddFiveMinutes={handleAddFiveMinutes}
+            onAddFiveMinutes={isTimeUp ? handleAddFiveMinutes : undefined}
           />
 
           <TaskList

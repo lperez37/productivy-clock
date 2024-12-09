@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -21,4 +20,13 @@
 .dark {
   color-scheme: dark;
 }
-      
+
+@keyframes shake {
+  0%, 100% { transform: rotate(-90deg) translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: rotate(-90deg) translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: rotate(-90deg) translateX(4px); }
+}
+
+.shake {
+  animation: shake 0.8s cubic-bezier(.36,.07,.19,.97) infinite;
+}

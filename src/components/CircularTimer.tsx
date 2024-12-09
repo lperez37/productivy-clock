@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 
 interface CircularTimerProps {
@@ -10,7 +10,7 @@ interface CircularTimerProps {
   progress: number;
   setInitialMinutes: (minutes: number) => void;
   isTimeUp: boolean;
-  onAddFiveMinutes: () => void;
+  onAddFiveMinutes?: () => void;
 }
 
 export const CircularTimer: React.FC<CircularTimerProps> = ({
@@ -41,44 +41,37 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
 
   return (
     <div className="relative w-[300px] h-[300px]">
-      <div className={`${isTimeUp ? 'animate-shake' : ''}`}>
-        <svg className="transform -rotate-90 w-full h-full">
-          <circle
-            cx="150"
-            cy="150"
-            r={radius}
-            stroke="currentColor"
-            strokeWidth="8"
-            fill="transparent"
-            className="text-gray-200 dark:text-gray-700"
-          />
-          <circle
-            cx="150"
-            cy="150"
-            r={radius}
-            stroke="currentColor"
-            strokeWidth="8"
-            fill="transparent"
-            strokeDasharray={circumference}
-            strokeDashoffset={dashOffset}
-            className={`transition-all duration-500 ${
-              isTimeUp ? 'text-yellow-500 animate-pulse' : 'text-red-500'
-            }`}
-          />
-        </svg>
-      </div>
+      <svg className={`${isTimeUp ? 'shake' : 'transform -rotate-90'} w-full h-full`}>
+        <circle
+          cx="150"
+          cy="150"
+          r={radius}
+          stroke="currentColor"
+          strokeWidth="8"
+          fill="transparent"
+          className="text-gray-200 dark:text-gray-700"
+        />
+        <circle
+          cx="150"
+          cy="150"
+          r={radius}
+          stroke="currentColor"
+          strokeWidth="8"
+          fill="transparent"
+          strokeDasharray={circumference}
+          strokeDashoffset={dashOffset}
+          className="text-red-500 transition-all duration-500"
+        />
+      </svg>
       
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-        {isTimeUp ? (
-          <div className="flex flex-col items-center gap-4">
-            <div className="text-2xl font-bold text-yellow-500">Time's up!</div>
-            <button
-              onClick={onAddFiveMinutes}
-              className="px-6 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition-colors shadow-lg hover:shadow-xl"
-            >
-              Add 5 Minutes
-            </button>
-          </div>
+        {isTimeUp && onAddFiveMinutes ? (
+          <button
+            onClick={onAddFiveMinutes}
+            className="px-6 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition-colors shadow-lg hover:shadow-xl"
+          >
+            Add 5 Minutes
+          </button>
         ) : inputMode && !isRunning ? (
           <div className="flex flex-col items-center">
             <input
@@ -99,22 +92,20 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
         )}
       </div>
 
-      {!isTimeUp && (
-        <div className="absolute bottom-[-60px] left-1/2 transform -translate-x-1/2 flex gap-4">
-          <button
-            onClick={isRunning ? onPause : onStart}
-            className="p-3 rounded-full bg-red-500 hover:bg-red-600 text-white transition-colors"
-          >
-            {isRunning ? <Pause size={24} /> : <Play size={24} />}
-          </button>
-          <button
-            onClick={onReset}
-            className="p-3 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
-          >
-            <RotateCcw size={24} />
-          </button>
-        </div>
-      )}
+      <div className="absolute bottom-[-60px] left-1/2 transform -translate-x-1/2 flex gap-4">
+        <button
+          onClick={isRunning ? onPause : onStart}
+          className="p-3 rounded-full bg-red-500 hover:bg-red-600 text-white transition-colors"
+        >
+          {isRunning ? <Pause size={24} /> : <Play size={24} />}
+        </button>
+        <button
+          onClick={onReset}
+          className="p-3 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+        >
+          <RotateCcw size={24} />
+        </button>
+      </div>
     </div>
   );
 };
