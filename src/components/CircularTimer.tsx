@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 
@@ -62,14 +61,17 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
       </svg>
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
         {inputMode && !isRunning ? (
-          <input
-            type="number"
-            value={inputValue}
-            onChange={handleInputChange}
-            className="w-24 text-4xl font-bold text-center bg-transparent border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-red-500"
-            max="60"
-            min="1"
-          />
+          <div className="flex flex-col items-center">
+            <input
+              type="number"
+              value={inputValue}
+              onChange={handleInputChange}
+              className="w-24 text-4xl font-bold text-center bg-transparent border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-red-500"
+              max="60"
+              min="1"
+            />
+            <span className="text-sm text-gray-500 dark:text-gray-400 mt-1">minutes</span>
+          </div>
         ) : (
           <div className="text-4xl font-bold">
             {Math.floor(initialMinutes * progress)}:
@@ -94,4 +96,3 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
     </div>
   );
 };
-      

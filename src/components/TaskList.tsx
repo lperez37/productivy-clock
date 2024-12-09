@@ -27,7 +27,7 @@ export const TaskList: React.FC<TaskListProps> = ({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto transition-all duration-300">
+    <div className="w-full max-w-md mx-auto mt-24 transition-all duration-300">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-all"
@@ -38,30 +38,32 @@ export const TaskList: React.FC<TaskListProps> = ({
 
       {isExpanded && (
         <div className="mt-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-          <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
-            <input
-              type="text"
-              value={newTask}
-              onChange={(e) => setNewTask(e.target.value)}
-              placeholder="Add a new task..."
-              className="flex-1 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-              type="submit"
-              className="p-2 rounded-lg bg-green-500 hover:bg-green-600 text-white transition-colors"
-            >
-              <Plus size={20} />
-            </button>
+          <div className="flex justify-between items-center mb-4">
+            <form onSubmit={handleSubmit} className="flex gap-2 flex-1">
+              <input
+                type="text"
+                value={newTask}
+                onChange={(e) => setNewTask(e.target.value)}
+                placeholder="Add a new task..."
+                className="flex-1 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                type="submit"
+                className="p-2 rounded-lg bg-green-500 hover:bg-green-600 text-white transition-colors"
+              >
+                <Plus size={20} />
+              </button>
+            </form>
             {tasks.length > 0 && (
               <button
                 type="button"
                 onClick={onClearTasks}
-                className="p-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors"
+                className="ml-2 p-2 rounded-lg border-2 border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
               >
                 <Trash2 size={20} />
               </button>
             )}
-          </form>
+          </div>
 
           <ul className="space-y-2">
             {tasks.map((task) => (
