@@ -8,10 +8,8 @@ A modern, minimalist productivity timer and task manager built with React, TypeS
 - ✅ Task management with drag-and-drop reordering
 - 🌓 Light/Dark mode with Catppuccin theme
 - 🎯 Push notifications via NTFY
-- 🎯 Focus-driven interface
 - 🎉 Celebration animations on task completion
-- ⌨️ Keyboard-friendly
-- 📱 Responsive design
+- 📲 Responsive design and Progressive Web App (PWA) support
 
 ## Tech Stack
 

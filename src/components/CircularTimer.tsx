@@ -112,7 +112,7 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
   };
 
   return (
-    <div className={`relative w-[300px] h-[300px] ${isInvalidAttempt ? 'shake' : ''}`}>
+    <div className={`relative w-[300px] h-[300px] mt-4 sm:mt-0 ${isInvalidAttempt ? 'shake' : ''}`}>
       <svg className={`${isTimeUp ? 'shake' : ''} transform -rotate-90 w-full h-full`}>
         <circle
           cx="150"
