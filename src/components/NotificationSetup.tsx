@@ -212,7 +212,7 @@ export const NotificationSetup: React.FC<NotificationSetupProps> = ({
               </button>
               <button
                 onClick={handleSave}
-                className="px-4 py-2 rounded-lg bg-[var(--latte-mauve)] hover:bg-[var(--latte-pink)] dark:bg-[var(--mocha-mauve)] dark:hover:bg-[var(--mocha-pink)] text-white transition-colors"
+                className="px-4 py-2 rounded-lg bg-[var(--latte-mauve)] hover:bg-[var(--latte-pink)] dark:bg-[var(--mocha-mauve)] dark:hover:bg-[var(--mocha-pink)] text-white dark:hover:text-[var(--mocha-crust)] transition-colors"
               >
                 Save
               </button>

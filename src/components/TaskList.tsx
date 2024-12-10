@@ -8,7 +8,7 @@
  * - Responsive design with Catppuccin theme
  */
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Check, Plus, Trash2, Pencil } from 'lucide-react';
 import { Dialog } from '@headlessui/react';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
@@ -139,6 +139,15 @@ export const TaskList: React.FC<TaskListProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<{ id: string; text: string } | null>(null);
   const [removingTaskId, setRemovingTaskId] = useState<string | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [contentHeight, setContentHeight] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      const height = contentRef.current.scrollHeight;
+      setContentHeight(height);
+    }
+  }, [tasks, isExpanded]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -209,8 +218,14 @@ export const TaskList: React.FC<TaskListProps> = ({
             {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </button>
 
-          {isExpanded && (
-            <div className="p-4">
+          <div 
+            className="overflow-hidden transition-[height,opacity] duration-300 ease-in-out"
+            style={{ 
+              height: isExpanded ? contentHeight : 0,
+              opacity: isExpanded ? 1 : 0
+            }}
+          >
+            <div ref={contentRef} className="p-4">
               <div className="flex justify-between items-center mb-4">
                 <form onSubmit={handleSubmit} className="flex gap-2 flex-1">
                   <input
@@ -260,7 +275,7 @@ export const TaskList: React.FC<TaskListProps> = ({
                 </DndContext>
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
 
