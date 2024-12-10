@@ -2,8 +2,7 @@
 
 A modern, minimalist productivity timer and task manager built with React, TypeScript, and Tailwind CSS, featuring the beautiful Catppuccin color scheme.
 
-![Light Mode Screenshot](./light-mode.png)
-![Dark Mode Screenshot](./dark-mode.png)
+<img src="./light-mode.png" width="400" alt="Light Mode Screenshot" /> <img src="./dark-mode.png" width="400" alt="Dark Mode Screenshot" />
 
 ## Features
 
