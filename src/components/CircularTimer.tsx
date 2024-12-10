@@ -40,6 +40,7 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
   const [inputMode, setInputMode] = useState(true);
   const [inputValue, setInputValue] = useState(initialMinutes.toString());
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isInvalidAttempt, setIsInvalidAttempt] = useState(false);
 
   // Auto-focus input when entering input mode
   useEffect(() => {
@@ -57,12 +58,25 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
     }
   }, [isRunning, isTimeUp, currentTime, initialMinutes]);
 
+  // Add this useEffect to reset the invalid attempt state
+  useEffect(() => {
+    if (isInvalidAttempt) {
+      const timer = setTimeout(() => {
+        setIsInvalidAttempt(false);
+      }, 820); // Slightly longer than the shake animation
+      return () => clearTimeout(timer);
+    }
+  }, [isInvalidAttempt]);
+
   // Handle input changes with validation
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value);
-    if (!isNaN(value) && value >= 0 && value <= 60) {
-      setInputValue(e.target.value);
-      setInitialMinutes(value);
+    const value = e.target.value;
+    setInputValue(value);
+    
+    // Only update initialMinutes if the value is a valid number
+    const numValue = parseInt(value);
+    if (!isNaN(numValue) && numValue >= 0 && numValue <= 60) {
+      setInitialMinutes(numValue);
     }
   };
 
@@ -87,9 +101,19 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Modify the click handler for the play button
+  const handlePlayClick = () => {
+    const numValue = parseInt(inputValue);
+    if (isNaN(numValue) || numValue <= 0 || numValue > 60) {
+      setIsInvalidAttempt(true);
+      return;
+    }
+    onStart();
+  };
+
   return (
-    <div className="relative w-[300px] h-[300px]">
-      <svg className={`${isTimeUp ? 'shake' : 'transform -rotate-90'} w-full h-full`}>
+    <div className={`relative w-[300px] h-[300px] ${isInvalidAttempt ? 'shake' : ''}`}>
+      <svg className={`${isTimeUp ? 'shake' : ''} transform -rotate-90 w-full h-full`}>
         <circle
           cx="150"
           cy="150"
@@ -142,7 +166,7 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
 
       <div className="absolute bottom-[-60px] left-1/2 transform -translate-x-1/2 flex gap-4">
         <button
-          onClick={isRunning ? onPause : onStart}
+          onClick={isRunning ? onPause : handlePlayClick}
           className="p-3 rounded-full bg-[var(--latte-mauve)] dark:bg-[var(--mocha-mauve)] text-white transition-colors hover:opacity-90"
         >
           {isRunning ? <Pause size={24} /> : <Play size={24} />}
