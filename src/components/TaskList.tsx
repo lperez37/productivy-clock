@@ -9,7 +9,7 @@
  */
 
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, Check, Plus, Trash2, Pencil, GripVertical } from 'lucide-react';
+import { ChevronDown, ChevronUp, Check, Plus, Trash2, Pencil, PencilLine } from 'lucide-react';
 import { Dialog } from '@headlessui/react';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';

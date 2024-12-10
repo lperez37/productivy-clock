@@ -1,14 +1,9 @@
-export const registerSW = () => {
+export function registerSW() {
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker
-        .register('/sw.js')
-        .then(registration => {
-          console.log('ServiceWorker registration successful');
-        })
-        .catch(error => {
-          console.log('ServiceWorker registration failed:', error);
-        });
-    });
+    navigator.serviceWorker
+      .register('/sw.js')
+      .catch((error) => {
+        console.error('ServiceWorker registration failed:', error)
+      })
   }
-}; 
+} 
