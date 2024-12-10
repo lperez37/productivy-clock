@@ -2,6 +2,9 @@
 
 A modern, minimalist productivity timer and task manager built with React, TypeScript, and Tailwind CSS, featuring the beautiful Catppuccin color scheme.
 
+![Light Mode Screenshot](./light-mode.png)
+![Dark Mode Screenshot](./dark-mode.png)
+
 ## Features
 
 - 🕒 Customizable Pomodoro-style timer
@@ -10,6 +13,7 @@ A modern, minimalist productivity timer and task manager built with React, TypeS
 - 🎯 Push notifications via NTFY
 - 🎉 Celebration animations on task completion
 - 📲 Responsive design and Progressive Web App (PWA) support
+- 💾 Persistent state across page reloads and browser restarts
 
 ## Tech Stack
 

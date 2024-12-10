@@ -37,8 +37,16 @@ function App() {
     const saved = localStorage.getItem('timerState');
     if (saved) {
       const parsed = JSON.parse(saved);
-      // Always start paused when reloading
-      return { ...parsed, isRunning: false };
+      if (parsed.lastUpdated) {
+        const elapsedMinutes = (Date.now() - parsed.lastUpdated) / 1000 / 60;
+        const newCurrentTime = Math.max(0.016, parsed.currentTime - elapsedMinutes); // 0.016 is ~1 second
+        return {
+          ...parsed,
+          currentTime: newCurrentTime,
+          // Keep the timer running if it was running before
+          isRunning: parsed.isRunning
+        };
+      }
     }
     return {
       initialTime: 25,
