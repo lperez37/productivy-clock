@@ -146,7 +146,7 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
         {isTimeUp && onAddFiveMinutes ? (
           <button
             onClick={onAddFiveMinutes}
-            className="px-6 py-2 rounded-lg bg-[var(--latte-blue)] dark:bg-[var(--mocha-blue)] text-white transition-colors shadow-lg hover:shadow-xl hover:opacity-90"
+            className="px-6 py-2 rounded-lg bg-[var(--latte-blue)] dark:bg-[var(--mocha-blue)] text-white dark:text-[var(--mocha-crust)] transition-colors shadow-lg hover:shadow-xl hover:opacity-90 font-medium"
           >
             Add 5 Minutes
           </button>
@@ -158,14 +158,14 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
               value={inputValue}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-              className="w-32 text-5xl font-bold text-center bg-transparent border-b-2 border-[var(--latte-surface1)] dark:border-[var(--mocha-surface1)] focus:outline-none focus:border-[var(--latte-mauve)] dark:focus:border-[var(--mocha-mauve)]"
+              className="w-32 text-5xl font-bold text-center bg-transparent border-b-2 border-[var(--latte-surface1)] dark:border-[var(--mocha-surface1)] focus:outline-none focus:border-[var(--latte-mauve)] dark:focus:border-[var(--mocha-mauve)] font-mono"
               max="9999"
               min="1"
             />
             <span className="text-sm text-[var(--latte-subtext1)] dark:text-[var(--mocha-subtext1)] mt-1">minutes</span>
           </div>
         ) : (
-          <div className={`text-6xl font-bold ${!isRunning && !isTimeUp && !inputMode ? 'blink' : ''}`}>
+          <div className={`text-6xl font-bold font-mono ${!isRunning && !isTimeUp && !inputMode ? 'blink' : ''}`}>
             {formatTime(currentTime)}
           </div>
         )}
