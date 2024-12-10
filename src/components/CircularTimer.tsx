@@ -1,8 +1,19 @@
+/**
+ * A circular timer component that displays a countdown with a circular progress indicator.
+ * Features include:
+ * - Input mode for setting timer duration
+ * - Play/Pause functionality
+ * - Reset capability
+ * - Visual feedback for timer completion
+ * - Option to add extra time when timer is up
+ */
+
 import { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 
 interface CircularTimerProps {
   initialMinutes: number;
+  currentTime: number;
   isRunning: boolean;
   onStart: () => void;
   onPause: () => void;
@@ -15,6 +26,7 @@ interface CircularTimerProps {
 
 export const CircularTimer: React.FC<CircularTimerProps> = ({
   initialMinutes,
+  currentTime,
   isRunning,
   onStart,
   onPause,
@@ -24,22 +36,28 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
   isTimeUp,
   onAddFiveMinutes,
 }) => {
+  // State for managing input mode and value
   const [inputMode, setInputMode] = useState(true);
   const [inputValue, setInputValue] = useState(initialMinutes.toString());
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Auto-focus input when entering input mode
   useEffect(() => {
     if (inputMode && !isRunning && inputRef.current) {
       inputRef.current.focus();
     }
   }, [inputMode, isRunning]);
 
+  // Toggle input mode based on timer state
   useEffect(() => {
-    if (!isRunning && !isTimeUp) {
+    if (!isRunning && !isTimeUp && currentTime === initialMinutes) {
       setInputMode(true);
+    } else {
+      setInputMode(false);
     }
-  }, [isRunning, isTimeUp]);
+  }, [isRunning, isTimeUp, currentTime, initialMinutes]);
 
+  // Handle input changes with validation
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
     if (!isNaN(value) && value >= 0 && value <= 60) {
@@ -48,6 +66,7 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
     }
   };
 
+  // Handle reset with focus management
   const handleReset = () => {
     onReset();
     setInputMode(true);
@@ -56,10 +75,12 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
     }, 0);
   };
 
+  // Calculate circle dimensions and progress
   const radius = 120;
   const circumference = 2 * Math.PI * radius;
   const dashOffset = circumference * (1 - progress);
 
+  // Format time display (MM:SS)
   const formatTime = (minutes: number) => {
     const mins = Math.floor(minutes);
     const secs = Math.floor((minutes * 60) % 60);
@@ -74,20 +95,20 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
           cy="150"
           r={radius}
           stroke="currentColor"
-          strokeWidth="8"
+          strokeWidth="12"
           fill="transparent"
-          className="text-gray-200 dark:text-gray-700"
+          className="text-[var(--latte-surface0)] dark:text-[var(--mocha-surface0)]"
         />
         <circle
           cx="150"
           cy="150"
           r={radius}
           stroke="currentColor"
-          strokeWidth="8"
+          strokeWidth="12"
           fill="transparent"
           strokeDasharray={circumference}
           strokeDashoffset={dashOffset}
-          className="text-red-500 transition-all duration-500"
+          className={`${!isRunning && !isTimeUp && !inputMode ? 'blink' : ''} text-[var(--latte-mauve)] dark:text-[var(--mocha-mauve)] transition-all duration-500`}
         />
       </svg>
       
@@ -95,26 +116,26 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
         {isTimeUp && onAddFiveMinutes ? (
           <button
             onClick={onAddFiveMinutes}
-            className="px-6 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition-colors shadow-lg hover:shadow-xl"
+            className="px-6 py-2 rounded-lg bg-[var(--latte-blue)] dark:bg-[var(--mocha-blue)] text-white transition-colors shadow-lg hover:shadow-xl hover:opacity-90"
           >
             Add 5 Minutes
           </button>
-        ) : inputMode && !isRunning && !isTimeUp ? (
+        ) : inputMode ? (
           <div className="flex flex-col items-center">
             <input
               ref={inputRef}
               type="number"
               value={inputValue}
               onChange={handleInputChange}
-              className="w-24 text-4xl font-bold text-center bg-transparent border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-red-500"
+              className="w-24 text-4xl font-bold text-center bg-transparent border-b-2 border-[var(--latte-surface1)] dark:border-[var(--mocha-surface1)] focus:outline-none focus:border-[var(--latte-mauve)] dark:focus:border-[var(--mocha-mauve)]"
               max="60"
               min="1"
             />
-            <span className="text-sm text-gray-500 dark:text-gray-400 mt-1">minutes</span>
+            <span className="text-sm text-[var(--latte-subtext1)] dark:text-[var(--mocha-subtext1)] mt-1">minutes</span>
           </div>
         ) : (
-          <div className={`text-4xl font-bold ${!isRunning && !isTimeUp ? 'animate-pulse' : ''}`}>
-            {formatTime(initialMinutes * progress)}
+          <div className={`text-4xl font-bold ${!isRunning && !isTimeUp && !inputMode ? 'blink' : ''}`}>
+            {formatTime(currentTime)}
           </div>
         )}
       </div>
@@ -122,13 +143,13 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
       <div className="absolute bottom-[-60px] left-1/2 transform -translate-x-1/2 flex gap-4">
         <button
           onClick={isRunning ? onPause : onStart}
-          className="p-3 rounded-full bg-red-500 hover:bg-red-600 text-white transition-colors"
+          className="p-3 rounded-full bg-[var(--latte-mauve)] dark:bg-[var(--mocha-mauve)] text-white transition-colors hover:opacity-90"
         >
           {isRunning ? <Pause size={24} /> : <Play size={24} />}
         </button>
         <button
           onClick={handleReset}
-          className="p-3 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+          className="p-3 rounded-full bg-[var(--latte-surface1)] dark:bg-[var(--mocha-surface1)] transition-colors hover:opacity-90"
         >
           <RotateCcw size={24} />
         </button>

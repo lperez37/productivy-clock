@@ -3,7 +3,47 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* Catppuccin Latte (Light) colors */
+  --latte-rosewater: #dc8a78;
+  --latte-flamingo: #dd7878;
+  --latte-pink: #ea76cb;
+  --latte-mauve: #8839ef;
+  --latte-red: #d20f39;
+  --latte-maroon: #e64553;
+  --latte-peach: #fe640b;
+  --latte-yellow: #df8e1d;
+  --latte-green: #40a02b;
+  --latte-teal: #179299;
+  --latte-blue: #1e66f5;
+  --latte-text: #4c4f69;
+  --latte-subtext1: #5c5f77;
+  --latte-surface1: #ccd0da;
+  --latte-surface0: #acb0be;
+  --latte-base: #eff1f5;
+  --latte-mantle: #e6e9ef;
+  --latte-crust: #dce0e8;
+
+  /* Catppuccin Mocha (Dark) colors */
+  --mocha-rosewater: #f5e0dc;
+  --mocha-flamingo: #f2cdcd;
+  --mocha-pink: #f5c2e7;
+  --mocha-mauve: #cba6f7;
+  --mocha-red: #f38ba8;
+  --mocha-maroon: #eba0ac;
+  --mocha-peach: #fab387;
+  --mocha-yellow: #f9e2af;
+  --mocha-green: #a6e3a1;
+  --mocha-teal: #94e2d5;
+  --mocha-blue: #89b4fa;
+  --mocha-text: #cdd6f4;
+  --mocha-subtext1: #bac2de;
+  --mocha-surface1: #45475a;
+  --mocha-surface0: #313244;
+  --mocha-base: #1e1e2e;
+  --mocha-mantle: #181825;
+  --mocha-crust: #11111b;
+
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
 @layer base {
@@ -14,6 +54,18 @@
   }
   input[type="number"] {
     -moz-appearance: textfield;
+  }
+
+  body {
+    @apply bg-[var(--latte-base)] text-[var(--latte-text)] transition-colors duration-300;
+  }
+
+  body.dark {
+    @apply bg-[var(--mocha-base)] text-[var(--mocha-text)];
+  }
+
+  input, button {
+    font-family: inherit;
   }
 }
 
@@ -45,4 +97,38 @@
 
 .animate-tilt {
   animation: tilt 10s infinite linear;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.blink {
+  animation: blink 1s ease-in-out infinite;
+}
+
+@keyframes fadeOut {
+  from { 
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 200px;
+    margin-bottom: 0.5rem;
+  }
+  to { 
+    opacity: 0;
+    transform: translateY(-10px);
+    max-height: 0;
+    margin-bottom: 0;
+  }
+}
+
+.animate-fadeOut {
+  animation: fadeOut 0.5s ease-out forwards;
+}
+
+.task-item {
+  max-height: 200px;
+  margin-bottom: 0.5rem;
+  transition: max-height 0.5s ease-out, margin-bottom 0.5s ease-out, opacity 0.5s ease-out, transform 0.5s ease-out;
 }
