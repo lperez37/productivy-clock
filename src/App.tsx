@@ -33,11 +33,19 @@ function App() {
   });
 
   // Timer state with initial time, current time, running status, and extra time count
-  const [timer, setTimer] = useState<TimerState>({
-    initialTime: 25,
-    currentTime: 25,
-    isRunning: false,
-    extraTimeCount: 0,
+  const [timer, setTimer] = useState<TimerState>(() => {
+    const saved = localStorage.getItem('timerState');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Always start paused when reloading
+      return { ...parsed, isRunning: false };
+    }
+    return {
+      initialTime: 25,
+      currentTime: 25,
+      isRunning: false,
+      extraTimeCount: 0,
+    };
   });
 
   const [notificationConfig, setNotificationConfig] = useState<NotificationConfig | null>(() => {
@@ -106,6 +114,36 @@ function App() {
     }
     return () => clearInterval(interval);
   }, [timer.isRunning, timer.currentTime]);
+
+  // Add effect to save timer state
+  useEffect(() => {
+    localStorage.setItem('timerState', JSON.stringify({
+      ...timer,
+      lastUpdated: Date.now()
+    }));
+  }, [timer]);
+
+  // Add visibility change handler
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && timer.isRunning) {
+        const saved = localStorage.getItem('timerState');
+        if (saved) {
+          const savedTimer = JSON.parse(saved);
+          if (savedTimer.lastUpdated) {
+            const elapsedMinutes = (Date.now() - savedTimer.lastUpdated) / 1000 / 60;
+            setTimer(prev => ({
+              ...prev,
+              currentTime: Math.max(0, prev.currentTime - elapsedMinutes),
+            }));
+          }
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [timer.isRunning]);
 
   // Timer control handlers
   const handleStartTimer = () => {

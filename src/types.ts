@@ -1,4 +1,3 @@
-
 export interface Task {
   id: string;
   text: string;
@@ -10,5 +9,6 @@ export interface TimerState {
   currentTime: number;
   isRunning: boolean;
   extraTimeCount: number;
+  lastUpdated?: number;
 }
       
