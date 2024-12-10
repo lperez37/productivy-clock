@@ -9,6 +9,7 @@ import { CircularTimer } from './components/CircularTimer';
 import { TaskList } from './components/TaskList';
 import { ThemeToggle } from './components/ThemeToggle';
 import { GithubLink } from './components/GithubLink';
+import { NotificationSetup, NotificationConfig } from './components/NotificationSetup';
 import { Task, TimerState } from './types';
 import './index.css';
 
@@ -39,10 +40,44 @@ function App() {
     extraTimeCount: 0,
   });
 
+  const [notificationConfig, setNotificationConfig] = useState<NotificationConfig | null>(() => {
+    const saved = localStorage.getItem('notificationConfig');
+    return saved ? JSON.parse(saved) : null;
+  });
+  const [isNotificationSetupOpen, setIsNotificationSetupOpen] = useState(false);
+
+  // Calculate timer progress and status
+  const progress = timer.currentTime / timer.initialTime;
+  const isTimeUp = !timer.isRunning && timer.currentTime <= 0;
+
   // Persist tasks to localStorage
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }, [tasks]);
+
+  // Save notification config to localStorage
+  useEffect(() => {
+    if (notificationConfig) {
+      localStorage.setItem('notificationConfig', JSON.stringify(notificationConfig));
+    } else {
+      localStorage.removeItem('notificationConfig');
+    }
+  }, [notificationConfig]);
+
+  // Send notification when timer is up
+  useEffect(() => {
+    if (isTimeUp && notificationConfig) {
+      fetch(`${notificationConfig.server}/${notificationConfig.topic}`, {
+        method: 'POST',
+        body: notificationConfig.message || 'This notification comes from your Productivy Clock',
+        headers: {
+          'Title': 'Time is up!',
+          'Priority': 'urgent',
+          'Tags': 'stopwatch'
+        }
+      }).catch(console.error);
+    }
+  }, [isTimeUp, notificationConfig]);
 
   // Apply theme changes to document
   useEffect(() => {
@@ -146,19 +181,24 @@ function App() {
     setTasks(newTasks);
   };
 
-  const progress = timer.currentTime / timer.initialTime;
-  const isTimeUp = !timer.isRunning && timer.currentTime <= 0;
+  const handleNotificationSetup = (config: NotificationConfig) => {
+    setNotificationConfig(config);
+  };
+
+  const handleRemoveNotification = () => {
+    setNotificationConfig(null);
+  };
 
   return (
     <div className="min-h-screen transition-colors duration-300">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 flex flex-col min-h-screen">
         <ThemeToggle 
           isDark={isDark} 
           onToggle={() => setIsDark((prev: boolean) => !prev)} 
         />
         <GithubLink url="https://github.com/lperez37/productivy-clock" />
         
-        <div className="flex flex-col items-center gap-12">
+        <div className="flex-1 flex flex-col items-center gap-12">
           <CircularTimer
             initialMinutes={timer.initialTime}
             currentTime={timer.currentTime}
@@ -184,6 +224,41 @@ function App() {
             onReorderTasks={handleReorderTasks}
           />
         </div>
+
+        <div className="mt-8 mb-4 text-center">
+          {notificationConfig ? (
+            <p className="text-xs text-black/40 dark:text-[var(--mocha-subtext1)]">
+              <button
+                onClick={() => setIsNotificationSetupOpen(true)}
+                className="text-[var(--latte-blue)] dark:text-[var(--mocha-blue)] hover:underline"
+              >
+                Edit
+              </button>
+              {' or '}
+              <button
+                onClick={handleRemoveNotification}
+                className="text-[var(--latte-red)] dark:text-[var(--mocha-red)] hover:underline"
+              >
+                remove
+              </button>
+              {' your push notification'}
+            </p>
+          ) : (
+            <button
+              onClick={() => setIsNotificationSetupOpen(true)}
+              className="text-xs text-black/40 dark:text-[var(--mocha-subtext1)] hover:text-black/60 dark:hover:text-[var(--mocha-text)] transition-colors"
+            >
+              Set up push notifications
+            </button>
+          )}
+        </div>
+
+        <NotificationSetup
+          isOpen={isNotificationSetupOpen}
+          onClose={() => setIsNotificationSetupOpen(false)}
+          onSave={handleNotificationSetup}
+          existingConfig={notificationConfig || undefined}
+        />
       </div>
     </div>
   );

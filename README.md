@@ -7,6 +7,7 @@ A modern, minimalist productivity timer and task manager built with React, TypeS
 - 🕒 Customizable Pomodoro-style timer
 - ✅ Task management with drag-and-drop reordering
 - 🌓 Light/Dark mode with Catppuccin theme
+- 🎯 Push notifications via NTFY
 - 🎯 Focus-driven interface
 - 🎉 Celebration animations on task completion
 - ⌨️ Keyboard-friendly
@@ -21,6 +22,7 @@ A modern, minimalist productivity timer and task manager built with React, TypeS
 - dnd-kit (drag and drop)
 - Lucide React (icons)
 - Headless UI (accessible components)
+- NTFY (push notifications)
 
 ## Getting Started
 
@@ -28,6 +30,7 @@ A modern, minimalist productivity timer and task manager built with React, TypeS
 
 - Node.js (v14 or higher)
 - npm or yarn
+- NTFY app (optional, for push notifications)
 
 ### Installation
 
@@ -69,6 +72,14 @@ yarn dev
 - Reorder tasks by dragging the grip handle
 - Clear all tasks using the clear button
 
+### Push Notifications
+- Click "Set up push notifications" at the bottom of the page
+- Choose between default NTFY server (ntfy.sh) or a custom server
+- Enter a unique topic for your notifications
+- Optionally customize the notification message
+- Install the NTFY app from [ntfy.sh](https://ntfy.sh/) on your devices
+- Subscribe to your topic in the NTFY app to receive notifications
+
 ## Customization
 
 The app uses the Catppuccin color scheme, which can be customized in `src/index.css`. The theme includes both light (Latte) and dark (Mocha) variants.
@@ -85,4 +96,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [Catppuccin](https://github.com/catppuccin/catppuccin) for the beautiful color scheme
 - [Lucide](https://lucide.dev/) for the icons
-- [dnd kit](https://dndkit.com/) for drag and drop functionality 
+- [dnd kit](https://dndkit.com/) for drag and drop functionality
+- [NTFY](https://ntfy.sh/) for the push notification service 
