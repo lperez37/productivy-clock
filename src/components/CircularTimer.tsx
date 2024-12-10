@@ -184,7 +184,9 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
               max="9999"
               min="1"
             />
-            <span className="text-sm text-[var(--latte-subtext1)] dark:text-[var(--mocha-subtext1)] mt-1">minutes</span>
+            <span className="text-sm text-[var(--latte-subtext1)] dark:text-[var(--mocha-subtext1)] mt-1">
+              {parseInt(inputValue) === 1 ? 'minute' : 'minutes'}
+            </span>
           </div>
         ) : (
           <div className={`text-6xl font-bold font-mono ${!isRunning && !isTimeUp && !inputMode ? 'blink' : ''}`}>
