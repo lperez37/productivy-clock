@@ -273,7 +273,7 @@ function App() {
           />
         </div>
 
-        <div className="mt-8 mb-4 text-center">
+        <div className="mt-16 mb-4 text-center">
           {notificationConfig ? (
             <p className="text-xs text-black/40 dark:text-[var(--mocha-subtext1)]">
               <button
