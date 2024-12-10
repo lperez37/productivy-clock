@@ -73,7 +73,6 @@ yarn dev
 - Edit tasks by clicking the pencil icon
 - Delete tasks using the trash icon
 - Reorder tasks by dragging the grip handle
-- Clear all tasks using the clear button
 
 ### Push Notifications
 - Click "Set up push notifications" at the bottom of the page
