@@ -15,6 +15,7 @@ A modern, minimalist productivity timer and task manager built with React, TypeS
 - 🎉 Celebration animations on task completion
 - 📲 Responsive design and Progressive Web App (PWA) support
 - 💾 Persistent state across page reloads and browser restarts
+- 🔔 Timer completion sound alert
 
 ## Tech Stack
 
@@ -99,4 +100,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Catppuccin](https://github.com/catppuccin/catppuccin) for the beautiful color scheme
 - [Lucide](https://lucide.dev/) for the icons
 - [dnd kit](https://dndkit.com/) for drag and drop functionality
-- [NTFY](https://ntfy.sh/) for the push notification service 
+- [NTFY](https://ntfy.sh/) for the push notification service
+- [FreeSound.org](https://freesound.org/) and user [greenvwbeetle](https://freesound.org/people/greenvwbeetle/sounds/337168/) for the timer sound

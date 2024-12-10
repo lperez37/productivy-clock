@@ -10,6 +10,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
+import useSound from 'use-sound';
 
 interface CircularTimerProps {
   initialMinutes: number;
@@ -41,6 +42,27 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
   const [inputValue, setInputValue] = useState(initialMinutes.toString());
   const inputRef = useRef<HTMLInputElement>(null);
   const [isInvalidAttempt, setIsInvalidAttempt] = useState(false);
+  const [playEndSound] = useSound('/timer-end.mp3', { 
+    volume: 0.75,
+    interrupt: true,
+    soundEnabled: !inputMode,
+  });
+  const prevIsTimeUpRef = useRef(isTimeUp);
+
+  // Play sound when timer ends
+  useEffect(() => {
+    if (isTimeUp && !prevIsTimeUpRef.current) {
+      console.log('Timer ended, playing sound...');
+      try {
+        playEndSound();
+      } catch (error) {
+        if (!(error instanceof DOMException)) {
+          console.error('Error playing sound:', error);
+        }
+      }
+    }
+    prevIsTimeUpRef.current = isTimeUp;
+  }, [isTimeUp, playEndSound]);
 
   // Auto-focus input when entering input mode
   useEffect(() => {
@@ -172,12 +194,14 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
       </div>
 
       <div className="absolute bottom-[-70px] left-1/2 transform -translate-x-1/2 flex gap-6">
-        <button
-          onClick={isRunning ? onPause : handlePlayClick}
-          className="p-4 rounded-full bg-[var(--latte-mauve)] dark:bg-[var(--mocha-mauve)] text-white transition-colors hover:opacity-90"
-        >
-          {isRunning ? <Pause size={32} /> : <Play size={32} />}
-        </button>
+        {!isTimeUp && (
+          <button
+            onClick={isRunning ? onPause : handlePlayClick}
+            className="p-4 rounded-full bg-[var(--latte-mauve)] dark:bg-[var(--mocha-mauve)] text-white transition-colors hover:opacity-90"
+          >
+            {isRunning ? <Pause size={32} /> : <Play size={32} />}
+          </button>
+        )}
         <button
           onClick={handleReset}
           className="p-4 rounded-full bg-[var(--latte-surface1)] dark:bg-[var(--mocha-surface1)] transition-colors hover:opacity-90"
