@@ -237,14 +237,16 @@ function App() {
 
   return (
     <div className="min-h-screen transition-colors duration-300">
-      <div className="container mx-auto px-4 py-8 flex flex-col min-h-screen">
-        <ThemeToggle 
-          isDark={isDark} 
-          onToggle={() => setIsDark((prev: boolean) => !prev)} 
-        />
-        <GithubLink url="https://github.com/lperez37/productivy-clock" />
+      <div className="container relative mx-auto px-4 py-8 flex flex-col min-h-screen">
+        <div className="absolute top-4 right-4 flex items-center gap-4">
+          <GithubLink url="https://github.com/lperez37/productivy-clock" />
+          <ThemeToggle 
+            isDark={isDark} 
+            onToggle={() => setIsDark((prev: boolean) => !prev)} 
+          />
+        </div>
         
-        <div className="flex-1 flex flex-col items-center gap-12">
+        <div className="flex-1 flex flex-col items-center gap-12 mt-16">
           <CircularTimer
             initialMinutes={timer.initialTime}
             currentTime={timer.currentTime}

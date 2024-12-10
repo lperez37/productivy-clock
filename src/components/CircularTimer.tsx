@@ -75,8 +75,14 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
     
     // Only update initialMinutes if the value is a valid number
     const numValue = parseInt(value);
-    if (!isNaN(numValue) && numValue >= 0 && numValue <= 60) {
+    if (!isNaN(numValue) && numValue >= 0 && numValue <= 9999) {
       setInitialMinutes(numValue);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handlePlayClick();
     }
   };
 
@@ -90,7 +96,7 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
   };
 
   // Calculate circle dimensions and progress
-  const radius = 120;
+  const radius = 140;
   const circumference = 2 * Math.PI * radius;
   const dashOffset = circumference * (1 - progress);
 
@@ -104,7 +110,7 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
   // Modify the click handler for the play button
   const handlePlayClick = () => {
     const numValue = parseInt(inputValue);
-    if (isNaN(numValue) || numValue <= 0 || numValue > 60) {
+    if (isNaN(numValue) || numValue <= 0 || numValue > 9999) {
       setIsInvalidAttempt(true);
       return;
     }
@@ -112,23 +118,23 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
   };
 
   return (
-    <div className={`relative w-[300px] h-[300px] mt-4 sm:mt-0 ${isInvalidAttempt ? 'shake' : ''}`}>
+    <div className={`relative w-[350px] h-[350px] mt-4 sm:mt-0 ${isInvalidAttempt ? 'shake' : ''}`}>
       <svg className={`${isTimeUp ? 'shake' : ''} transform -rotate-90 w-full h-full`}>
         <circle
-          cx="150"
-          cy="150"
+          cx="175"
+          cy="175"
           r={radius}
           stroke="currentColor"
-          strokeWidth="12"
+          strokeWidth="24"
           fill="transparent"
           className="text-[var(--latte-surface0)] dark:text-[var(--mocha-surface0)]"
         />
         <circle
-          cx="150"
-          cy="150"
+          cx="175"
+          cy="175"
           r={radius}
           stroke="currentColor"
-          strokeWidth="12"
+          strokeWidth="24"
           fill="transparent"
           strokeDasharray={circumference}
           strokeDashoffset={dashOffset}
@@ -151,31 +157,32 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({
               type="number"
               value={inputValue}
               onChange={handleInputChange}
-              className="w-24 text-4xl font-bold text-center bg-transparent border-b-2 border-[var(--latte-surface1)] dark:border-[var(--mocha-surface1)] focus:outline-none focus:border-[var(--latte-mauve)] dark:focus:border-[var(--mocha-mauve)]"
-              max="60"
+              onKeyDown={handleKeyDown}
+              className="w-32 text-5xl font-bold text-center bg-transparent border-b-2 border-[var(--latte-surface1)] dark:border-[var(--mocha-surface1)] focus:outline-none focus:border-[var(--latte-mauve)] dark:focus:border-[var(--mocha-mauve)]"
+              max="9999"
               min="1"
             />
             <span className="text-sm text-[var(--latte-subtext1)] dark:text-[var(--mocha-subtext1)] mt-1">minutes</span>
           </div>
         ) : (
-          <div className={`text-4xl font-bold ${!isRunning && !isTimeUp && !inputMode ? 'blink' : ''}`}>
+          <div className={`text-6xl font-bold ${!isRunning && !isTimeUp && !inputMode ? 'blink' : ''}`}>
             {formatTime(currentTime)}
           </div>
         )}
       </div>
 
-      <div className="absolute bottom-[-60px] left-1/2 transform -translate-x-1/2 flex gap-4">
+      <div className="absolute bottom-[-70px] left-1/2 transform -translate-x-1/2 flex gap-6">
         <button
           onClick={isRunning ? onPause : handlePlayClick}
-          className="p-3 rounded-full bg-[var(--latte-mauve)] dark:bg-[var(--mocha-mauve)] text-white transition-colors hover:opacity-90"
+          className="p-4 rounded-full bg-[var(--latte-mauve)] dark:bg-[var(--mocha-mauve)] text-white transition-colors hover:opacity-90"
         >
-          {isRunning ? <Pause size={24} /> : <Play size={24} />}
+          {isRunning ? <Pause size={32} /> : <Play size={32} />}
         </button>
         <button
           onClick={handleReset}
-          className="p-3 rounded-full bg-[var(--latte-surface1)] dark:bg-[var(--mocha-surface1)] transition-colors hover:opacity-90"
+          className="p-4 rounded-full bg-[var(--latte-surface1)] dark:bg-[var(--mocha-surface1)] transition-colors hover:opacity-90"
         >
-          <RotateCcw size={24} />
+          <RotateCcw size={32} />
         </button>
       </div>
     </div>

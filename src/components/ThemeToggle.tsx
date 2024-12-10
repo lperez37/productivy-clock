@@ -15,7 +15,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ isDark, onToggle }) =>
   return (
     <button
       onClick={onToggle}
-      className="fixed top-4 right-4 p-3 rounded-xl bg-[var(--latte-base)] dark:bg-[var(--mocha-mantle)] hover:bg-[var(--latte-surface0)] dark:hover:bg-[var(--mocha-surface0)] transition-all duration-300 shadow-lg hover:shadow-xl"
+      className="p-3 rounded-xl bg-[var(--latte-base)] dark:bg-[var(--mocha-mantle)] hover:bg-[var(--latte-surface0)] dark:hover:bg-[var(--mocha-surface0)] transition-all duration-300 shadow-lg hover:shadow-xl"
       aria-label="Toggle theme"
     >
       {isDark ? (
